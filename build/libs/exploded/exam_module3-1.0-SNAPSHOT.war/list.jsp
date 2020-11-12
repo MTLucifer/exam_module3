@@ -12,9 +12,15 @@
     <title>Title</title>
 </head>
 <body>
-<h1>Customers</h1>
+<h1>Products</h1>
 <p>
     <a href="/product?action=create">Create new product</a>
+</p>
+<p>
+<form method="post" action="/product?action=search">
+    <input type="text" name="words">
+    <input type="submit" value="Search">
+</form>
 </p>
 <table border="1">
     <tr>

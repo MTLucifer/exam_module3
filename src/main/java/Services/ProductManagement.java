@@ -12,11 +12,11 @@ public class ProductManagement implements ProductService {
     private String password = "Doi2thutoc";
 
     private static final String INSERT_PRODUCT_SQL = "insert into products (name,price,color,category_id,quantity,description) values (?,?,?,?,?,?)";
-    private static final String SELECT_PRODUCT_BY_ID = "select * from products where id = ?";
+    private static final String SELECT_PRODUCT_BY_ID = "select * from products  where id = ?";
     private static final String SELECT_ALL_PRODUCTS = "select * from products join categories on category_id = categories.id";
     private static final String DELETE_PRODUCT_SQL = "delete from products where id = ?";
     private static final String UPDATE_PRODUCT_SQL = "update products set name = ?,price= ?, quantity =?,category_id=?,color=?,description=? where id = ?";
-    private static final String SELECT_PRODUCT_BY_NAME = "select * from products where name like concat('%',?,'%')";
+    private static final String SELECT_PRODUCT_BY_NAME = "select * from products join categories on category_id = categories.id where name like concat('%',?,'%')";
 
     public Connection getJDBC() {
         Connection connection = null;
@@ -91,26 +91,6 @@ public class ProductManagement implements ProductService {
         return products;
     }
 
-    public List<Product> findProductsByName() {
-        List<Product> products = new ArrayList<>();
-        try (Connection connection = getJDBC();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PRODUCT_BY_NAME);) {
-            System.out.println(preparedStatement);
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                String name = rs.getString("name");
-                int price = rs.getInt("price");
-                int quantity = rs.getInt("quantity");
-                String color = rs.getString("color");
-                String category = rs.getString("category");
-                int id = rs.getInt("id");
-                products.add(new Product(name, color, category,price,quantity,id));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return products;
-    }
 
     @Override
     public void deleteProduct(int id) throws SQLException {
@@ -135,6 +115,29 @@ public class ProductManagement implements ProductService {
             rowUpdated = statement.executeUpdate() > 0;
         }
         return rowUpdated;
+    }
+
+    @Override
+    public List<Product> findProductByName(String words) {
+        List<Product> products = new ArrayList<>();
+        try (Connection connection = getJDBC();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PRODUCT_BY_NAME);) {
+            preparedStatement.setString(1, words);
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                int quantity = rs.getInt("quantity");
+                String color = rs.getString("color");
+                String category = rs.getString("category");
+                int id = rs.getInt("id");
+                products.add(new Product(name, color, category,price,quantity,id));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
     }
 
 }

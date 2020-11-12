@@ -62,8 +62,8 @@ public class ProductServlet extends HttpServlet {
                     throwables.printStackTrace();
                 }
                 break;
-//            case "search":
-//                listCustomersByPhone(request,response);
+            case "search":
+                listProductByName(request,response);
             default:
                 break;
         }
@@ -94,18 +94,18 @@ public class ProductServlet extends HttpServlet {
     }
 
     private void listProductByName(HttpServletRequest request, HttpServletResponse response) {
+        String words= request.getParameter("words");
+        List<Product> products = this.ps.findProductByName(words);
+        request.setAttribute("products", products);
 
-//        List<Product> products = this.ps.findProductByName(words);
-//        request.setAttribute("products", products);
-//
-//        RequestDispatcher dispatcher = request.getRequestDispatcher("list.jsp");
-//        try {
-//            dispatcher.forward(request, response);
-//        } catch (ServletException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        RequestDispatcher dispatcher = request.getRequestDispatcher("list.jsp");
+        try {
+            dispatcher.forward(request, response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showCreateForm(HttpServletRequest request, HttpServletResponse response) {
